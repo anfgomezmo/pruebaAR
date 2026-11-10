@@ -3,8 +3,8 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Realidad Aumentada con Video</title>
-    <script src="https://aframe.io"></script>
-    <script src="https://jsdelivr.net"></script>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
       body { margin: 0; overflow: hidden; }
       #btn-sonido {
@@ -30,7 +30,7 @@
     <a-scene
       mindar-image="imageTargetSrc: ./targets.mind;"
       color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
+      renderer="colorManagement: true; physicallyCorrectLights: true"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
@@ -49,8 +49,7 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      
-        <!-- Ajusta height según la proporción de tu video (0.5625 es formato 16:9 horizontal) -->
+      <a-entity id="target" mindar-image-target="targetIndex: 0">
         <a-video
           src="#mi-video"
           position="0 0 0"
@@ -58,7 +57,7 @@
           width="1"
           rotation="0 0 0"
         ></a-video>
-      
+      </a-entity>
     </a-scene>
 
     <script>
@@ -67,7 +66,9 @@
       const btnSonido = document.querySelector("#btn-sonido");
 
       target.addEventListener("targetFound", () => {
-        video.play();
+        video.play().catch((error) => {
+          console.error("No se pudo reproducir el video:", error);
+        });
       });
 
       target.addEventListener("targetLost", () => {
