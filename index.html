@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Realidad Aumentada con Video</title>
+    <script src="https://aframe.io"></script>
+    <script src="https://jsdelivr.net"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      #btn-sonido {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 999;
+        padding: 12px 24px;
+        background: #000000cc;
+        color: white;
+        border: 2px solid white;
+        border-radius: 30px;
+        font-family: sans-serif;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="btn-sonido">🔊 Activar Sonido</button>
+
+    <a-scene
+      mindar-image="imageTargetSrc: ./targets.mind;"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-assets>
+        <video
+          id="mi-video"
+          src="./video.mp4"
+          preload="auto"
+          loop
+          crossorigin="anonymous"
+          playsinline
+          webkit-playsinline
+          muted
+        ></video>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      
+        <!-- Ajusta height según la proporción de tu video (0.5625 es formato 16:9 horizontal) -->
+        <a-video
+          src="#mi-video"
+          position="0 0 0"
+          height="0.5625"
+          width="1"
+          rotation="0 0 0"
+        ></a-video>
+      
+    </a-scene>
+
+    <script>
+      const target = document.querySelector("#target");
+      const video = document.querySelector("#mi-video");
+      const btnSonido = document.querySelector("#btn-sonido");
+
+      target.addEventListener("targetFound", () => {
+        video.play();
+      });
+
+      target.addEventListener("targetLost", () => {
+        video.pause();
+      });
+
+      btnSonido.addEventListener("click", () => {
+        video.muted = !video.muted;
+        btnSonido.textContent = video.muted ? "🔊 Activar Sonido" : "🔇 Silenciar";
+      });
+    </script>
+  </body>
+</html>
